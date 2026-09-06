@@ -54,5 +54,6 @@ def main() -> None:
             ]
             f.writelines(content)
 
+
 if __name__ == "__main__":
     main()
