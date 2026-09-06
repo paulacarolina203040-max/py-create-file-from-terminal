@@ -1,6 +1,6 @@
 import argparse
 import os
-from datetime import datetime, timezone
+from datetime import datetime
 
 
 def main() -> None:
@@ -37,7 +37,7 @@ def main() -> None:
                 break
             lines.append(line)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now()
         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
         file_exists = os.path.exists(target_file)
 
