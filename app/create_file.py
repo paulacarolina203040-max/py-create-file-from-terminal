@@ -11,30 +11,25 @@ def main() -> None:
     )
     parser.add_argument(
         "-f",
-        default=None
+        default="file.txt"
     )
     parsed_args = parser.parse_args()
 
+    target_dir = ""
     if parsed_args.d:
-        target_dir = os.path.sep.join(
+        target_dir = "/".join(
             parsed_args.d
         )
         os.makedirs(
             target_dir,
             exist_ok=True
         )
-    else:
-        target_dir = ""
 
-    if parsed_args.f is None:
-        file_name = "file.txt"
-    else:
-        file_name = parsed_args.f
-
+    file_name = parsed_args.f
     if target_dir:
-        target_file = os.path.join(
-            target_dir,
-            file_name
+        target_file = (
+            f"{target_dir}/"
+            f"{file_name}"
         )
     else:
         target_file = file_name
@@ -46,30 +41,25 @@ def main() -> None:
                 "Enter content line: "
             )
             if (
-                content_line.lower()
+                content_line
                 == "stop"
             ):
                 break
-            lines.append(content_line)
+            lines.append(
+                content_line
+                + "\n"
+            )
         except EOFError:
             break
 
-    should_write = (
-        parsed_args.f is not None
-        or not parsed_args.d
-        or lines
-    )
-
-    if target_file and should_write:
-        with open(
-            target_file,
-            "w",
-            encoding="utf-8"
-        ) as file_handle:
-            for content_line in lines:
-                file_handle.write(
-                    content_line + "\n"
-                )
+    with open(
+        target_file,
+        "w",
+        encoding="utf-8"
+    ) as file_handle:
+        file_handle.writelines(
+            lines
+        )
 
 
 if __name__ == "__main__":
