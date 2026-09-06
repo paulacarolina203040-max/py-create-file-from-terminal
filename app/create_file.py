@@ -2,74 +2,73 @@ import argparse
 import os
 
 
-
 def main() -> None:
-    p = argparse.ArgumentParser()
-    p.add_argument(
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
         "-d",
         nargs="*",
         default=[]
     )
-    p.add_argument(
+    parser.add_argument(
         "-f",
         default=None
     )
-    a = p.parse_args()
+    parsed_args = parser.parse_args()
 
-    if a.d:
-        d = os.path.sep.join(
-            a.d
+    if parsed_args.d:
+        target_dir = os.path.sep.join(
+            parsed_args.d
         )
         os.makedirs(
-            d,
+            target_dir,
             exist_ok=True
         )
     else:
-        d = ""
+        target_dir = ""
 
-    fn = (
-        "file.txt"
-        if a.f is None
-        else a.f
-    )
+    if parsed_args.f is None:
+        file_name = "file.txt"
+    else:
+        file_name = parsed_args.f
 
-    tf = (
-        os.path.join(
-            d,
-            fn
+    if target_dir:
+        target_file = os.path.join(
+            target_dir,
+            file_name
         )
-        if d
-        else fn
-    )
+    else:
+        target_file = file_name
 
     lines = []
     while True:
         try:
-            l = input(
+            content_line = input(
                 "Enter content line: "
             )
             if (
-                l.lower()
+                content_line.lower()
                 == "stop"
             ):
                 break
-            lines.append(l)
+            lines.append(content_line)
         except EOFError:
             break
 
-    if tf and (
-        a.f is not None
-        or not a.d
+    should_write = (
+        parsed_args.f is not None
+        or not parsed_args.d
         or lines
-    ):
+    )
+
+    if target_file and should_write:
         with open(
-            tf,
+            target_file,
             "w",
-            encoding="utf-8",
-        ) as f:
-            for l in lines:
-                f.write(
-                    l + "\n"
+            encoding="utf-8"
+        ) as file_handle:
+            for content_line in lines:
+                file_handle.write(
+                    content_line + "\n"
                 )
 
 
