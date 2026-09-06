@@ -1,36 +1,24 @@
+import argparse
 import os
-import sys
 from datetime import datetime, timezone
 
 
-def main():
-    args = sys.argv[1:]
-    dir_parts = []
-    file_name = None
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", nargs="*", default=[])
+    parser.add_argument("-f", default=None)
+    parsed_args = parser.parse_args()
 
-    i = 0
-    while i < len(args):
-        if args[i] == "-d":
-            i += 1
-            while i < len(args) and not args[i].startswith("-"):
-                dir_parts.append(args[i])
-                i += 1
-        elif args[i] == "-f":
-            i += 1
-            if i < len(args) and not args[i].startswith("-"):
-                file_name = args[i]
-                i += 1
-        else:
-            i += 1
-
-    if dir_parts:
-        target_dir = os.path.join(*dir_parts)
+    if parsed_args.d:
+        target_dir = os.path.join(*parsed_args.d)
         os.makedirs(target_dir, exist_ok=True)
     else:
         target_dir = ""
 
-    if file_name is None and not dir_parts:
+    if parsed_args.f is None and not parsed_args.d:
         file_name = "file.txt"
+    else:
+        file_name = parsed_args.f
 
     if file_name:
         target_file = (
